@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 #coding=utf-8
 
-from numpy import linalg
 from numpy import around
-from copy import copy
+from copy import deepcopy
 from MyMatrix import Matrix
 from MatrixAlghoritms import *
 
 def addMatrix(matrix1, matrix2):
+        matrix1 = deepcopy(matrix1)
+        matrix2 = deepcopy(matrix2)
         if len(matrix1) != len(matrix2):
                 return matrix1
         for i in range(len(matrix1)):
@@ -16,6 +17,7 @@ def addMatrix(matrix1, matrix2):
         return matrix1
 
 def addColumn(matrix, col, col_is_matrix=False):
+        matrix = deepcopy(matrix)
         if col_is_matrix:
                 return addMatrix(matrix, col)
         if len(matrix) != len(col):
@@ -25,9 +27,11 @@ def addColumn(matrix, col, col_is_matrix=False):
         return matrix
 
 def mulL(l, n):
+        l = deepcopy(l)
 	return [ i * n for i in l ] #round(i * n, 2)
 
 def getCol(matrix, col, end):
+        matrix = deepcopy(matrix)
         return Matrix([i[int(col):end] for i in matrix])
 
 def addLists(l1, l2, coefficient=1):
@@ -35,16 +39,20 @@ def addLists(l1, l2, coefficient=1):
 	return [ l1[i] + l2[i] for i in range(len(l1)) ] #round(l1[i] + l2[i], 2)
 
 def addRows(matrix, row1, row2, coefficient):
+        matrix = deepcopy(matrix)
 	res = addLists(matrix[row1], matrix[row2], coefficient)
 	return res
 
 #for Cramer
 def swapRowsL(matrix, row_ind, row_s):
-        matrix = copy(matrix)
-        matrix[row_ind] = row_s
+        matrix = deepcopy(matrix)
+        assert len(matrix) == len(row_s)
+        for i in range(len(matrix)):
+                matrix[i][row_ind] = row_s[i]
         return matrix
 
 def swapRows(matrix, row1, row2):
+        matrix = deepcopy(matrix)
         if isinstance(row2, list):
                 swapRowsL(matrix, row1, row2)
         if row1 == row2:
@@ -53,6 +61,7 @@ def swapRows(matrix, row1, row2):
         return matrix
 
 def findMinFirstEl(matrix):
+        matrix = deepcopy(matrix)
         ind = 0
         for i in range(len(matrix)):
                 if matrix[i][0] < matrix[ind][0]:
@@ -72,11 +81,6 @@ def getUnitMatrix(n):
                 res.append(tr)
         return res
 
-def getNumberSign(num):
-        if num < 0:
-                return -1
-        return 1
-
 def printMatr(matr):
         for i in matr:
                 print(i)
@@ -90,11 +94,8 @@ def getArguments(l):
                         res.append(i)
         return res
 
-# herь
-def getLastX(arguments):
-        return arguments[-1][1] / arguments[-1][0]
-
 def toTriangleShape(matr, col=Matrix([])):
+        matr = deepcopy(matr)
         matr = addColumn(matr, col)
         if matr[0][0] == 0:
             matr = swapRows(matr, 0, -1)
@@ -108,6 +109,7 @@ def toTriangleShape(matr, col=Matrix([])):
         return matr
 
 def toUnitShape(matrix, col=Matrix([]), col_is_matr=False):
+        matrix = deepcopy(matrix)
         matrix = addColumn(matrix, col, col_is_matrix=col_is_matr)
         for i in range(len(matrix)):
                 matrix[i] = mulL(matrix[i], 1. / matrix[i][i])
@@ -126,7 +128,8 @@ def toUnitShape(matrix, col=Matrix([]), col_is_matr=False):
         return matrix
 
 def getInverseMatrix(matrix):
-        if linalg.det(matrix) == 0:
+        matrix = deepcopy(matrix)
+        if getDet(matrix) == 0:
                 print('Матрица невырождена')
                 return matrix
         n = len(matrix)
@@ -136,6 +139,7 @@ def getInverseMatrix(matrix):
         return matrix
 
 def matrixProduct(x, y):
+        x = deepcopy(x); y = deepcopy(y)
         x_rows, x_cols = x.shape
         y_rows, y_cols = y.shape
         z = Matrix.zeros((x_rows, y_cols))
@@ -153,12 +157,13 @@ def matrixProduct(x, y):
         return z
 
 def matrixMethod(a, b):
-        a = copy(a)
-        b = copy(b)
+        a = deepcopy(a)
+        b = deepcopy(b)
         inv_a = getInverseMatrix(a)
         return matrixProduct(inv_a, b)
 
 def cramerMethod(matrix, col):
+        matrix = deepcopy(matrix)
         assert matrix.shape[0] == matrix.shape[1]
         n = matrix.shape[0]
         det = getDet(matrix)
@@ -167,17 +172,16 @@ def cramerMethod(matrix, col):
                 return
         x = Matrix([])
         for i in range(n):
-                print('{} / {} = {}'.format( getDet(swapRowsL(matrix, i, col)), det, getDet(swapRowsL(matrix, i, col)) / det ))
-                #x.append(getDet(swapRowsL(matrix, i, col)) / det)
-        #return x
+                t_matr = deepcopy(matrix)
+                temp = getDet(swapRowsL(t_matr, i, col)) / det
+                x.append(temp)
+        return x
 
 def __main__():
         A = Matrix([ [ 5, 6, 9 ], [ 3, 8, 2 ], [7, 1, 2] ])
         B = Matrix([ 452, 245, 171 ])
-        cramerMethod(A, B)
-        #from numpy.linalg import solve
-        #test2 = solve(A, B)
-        #print('t1: {}\nt2: {}'.format(test, test2))
+        X = cramerMethod(A, B)
+        print(X)
 
 if __name__ == '__main__':
         __main__() 

@@ -2,10 +2,12 @@ from MyMatrix import Matrix
 from copy import copy
 
 def minor(matrix, i, j):
+    matrix = copy(matrix)
     minor = Matrix([row[:j] + row[j+1:] for row in (matrix[:i] + matrix[i+1:])])
     return minor
 
 def getDet(matrix):
+    matrix = copy(matrix)
     assert matrix.shape[0] == matrix.shape[1]
     n = matrix.shape[0]
     if n == 1:
