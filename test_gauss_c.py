@@ -25,11 +25,11 @@ def pivoting(a, b):
 
         """
 
-        for k in range(0, n-1):
+        for k in range(n - 1):
                 p = int(argmax(abs(a[k:n, k]))) + k
                 if (p != k):
                         swapRows(b, k, p)
-                        swapRows(a,k,p)
+                        swapRows(a, k, p)
 
 def gauss(a, b, t=1.0e-9, verbose=False):
         """ Solves [a|b] by gauss elimination"""
@@ -48,14 +48,14 @@ def gauss(a, b, t=1.0e-9, verbose=False):
 
         pivoting(tempa, tempb)
 
-        for k in range(0,n-1):
-               for i in range(k+1, n):
-                        if tempa[i,k] != 0.0:
-                                m = tempa[i,k]/tempa[k,k]
+        for k in range(n - 1):
+               for i in range(k + 1, n):
+                        if tempa[i, k] != 0.0:
+                                m = tempa[i, k] / tempa[k, k]
 
         # Back substitution
         for k in range(n-1,-1,-1):
-                tempb[k] = (tempb[k] - dot(tempa[k,k+1:n], tempb[k+1:n]))/tempa[k,k]
+                tempb[k] = (tempb[k] - dot(tempa[k, k + 1:n], tempb[k + 1:n])) / tempa[k, k]
 
         return tempb
 
