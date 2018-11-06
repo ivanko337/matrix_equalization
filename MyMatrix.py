@@ -17,5 +17,5 @@ class Matrix(list):
 
         @property
         def shape(self):
-                return ((0, 0) if not self else 
+                return ((0, 0) if not self else
                         (len(self), 1 if isinstance(self[0], int) else len(self[0])))

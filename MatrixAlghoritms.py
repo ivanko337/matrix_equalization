@@ -50,18 +50,23 @@ def getArguments(l):
             res.append(i)
     return res
 
-def toTriangleShape(matr, col=Matrix([])):
+def count(l, item):
+    res = 0
+    for i in l:
+        if i == item: res += 1
+    return res
+
+def toTriangleShape(matr):
     matr = deepcopy(matr)
-    matr = addColumn(matr, col)
     if matr[0][0] == 0:
         matr = swapRows(matr, 0, -1)
     for i in range(len(matr)):
         for j in range(i + 1, len(matr)):
-            coefficient = matr[j][i] / matr[i][i]
+            coefficient = float(matr[j][i]) / float(matr[i][i])
             coefficient = -coefficient
             matr[j] = addRows(matr, i, j, coefficient)
     for i in range(len(matr)):
-        matr[i] = mulL(matr[i], 1 / matr[i][i])
+        matr[i] = mulL(matr[i], 1. / matr[i][i])
     return matr
 
 def addMatrix(matrix1, matrix2):
@@ -93,11 +98,16 @@ def getCol(matrix, col, end):
     return Matrix([i[int(col):end] for i in matrix])
 
 def addLists(l1, l2, coefficient=1):
-	l1 = mulL(l1, coefficient)
-	return [ l1[i] + l2[i] for i in range(len(l1)) ]
+    assert len(l1) == len(l2)
+    l1 = deepcopy(l1)
+    l2 = deepcopy(l2)
+    l1 = mulL(l1, coefficient)
+    return [ l1[i] + l2[i] for i in range(len(l1)) ]
 
 def addRows(matrix, row1, row2, coefficient):
     matrix = deepcopy(matrix)
+    row1 = deepcopy(row1)
+    row2 = deepcopy(row2)
     res = addLists(matrix[row1], matrix[row2], coefficient)
     return res
 
